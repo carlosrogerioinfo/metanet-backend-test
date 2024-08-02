@@ -39,6 +39,6 @@ namespace MetaNet.Microservices.Domain.Entities
             TotalValue = total;
         }
 
-        public void SetPaymentSale(PaymentFormat saleStatus) => PaymentFormat = saleStatus;
+        public void SetPaymentSale(PaymentFormat paymentFormat) => PaymentFormat = paymentFormat;
     }
 }
