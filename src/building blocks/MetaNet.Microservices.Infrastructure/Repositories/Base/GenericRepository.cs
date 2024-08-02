@@ -23,6 +23,18 @@ namespace MetaNet.Microservices.Infrastructure.Repositories.Base
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression)
+        {
+            var entity = _dbSet
+                .AsQueryable()
+                .AsNoTrackingWithIdentityResolution();
+
+            if (expression is not null)
+                entity = entity.Where(expression);
+
+            return await entity.ToListAsync();
+        }
+
         public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbSet

@@ -24,6 +24,8 @@ namespace MetaNet.AllInOne.Api.Configurations
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<UserService>();
+            
+            services.AddScoped<StatisticService>();
 
             return services;
         }
