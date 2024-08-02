@@ -36,15 +36,15 @@ namespace MetaNet.Microservices.Service
             return _mapper.Map<IEnumerable<SaleItemResponse>>(entity);
         }
 
-        public async Task<ICommandResult> Handle(Guid id)
+        public async Task<IEnumerable<ICommandResult>> Handle(Guid saleId)
         {
-            var entity = await _repository.GetDataAsync(x => x.Id == id);
+            var entity = await _repository.GetListDataAsync(x => x.SaleId == saleId, inc => inc.Product);
 
             if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
 
             if (!IsValid()) return default;
 
-            return _mapper.Map<SaleItemResponse>(entity);
+            return _mapper.Map< IEnumerable<SaleItemResponse>>(entity);
         }
 
         public async Task<ICommandResult> Handle(SaleItemRegisterRequest request)

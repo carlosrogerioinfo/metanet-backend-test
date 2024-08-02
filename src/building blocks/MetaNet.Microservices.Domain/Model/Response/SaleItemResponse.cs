@@ -7,6 +7,7 @@ namespace MetaNet.Microservices.Domain.Http.Response
         public Guid Id { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
+        public double Total { get; set; }
 
         public ProductResponse Product { get; set; }
 

@@ -19,16 +19,16 @@ namespace MetaNet.SaleItems.Api.Controllers
         }
 
         /// <summary>
-        /// Retorna o registro da tabela itens da venda filtrado pelo id
+        /// Retorna o registro da tabela itens da venda filtrado pelo id da venda
         /// </summary>
         /// <response code="200">Registro que foi retornado com sucesso.</response>
         /// <response code="412">Ocorreu uma falha de pre-condição ou um algum erro interno.</response>
         [HttpGet, Route("get")]
-        [ProducesResponseType(typeof(BaseResponse<SaleItemResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<IEnumerable<SaleItemResponse>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status412PreconditionFailed)]
-        public async Task<IActionResult> Get([Required] Guid id)
+        public async Task<IActionResult> Get([Required] Guid saleId)
         {
-            var data = await _service.Handle(id);
+            var data = await _service.Handle(saleId);
             return await Response(data, _service.Notifications);
         }
 
