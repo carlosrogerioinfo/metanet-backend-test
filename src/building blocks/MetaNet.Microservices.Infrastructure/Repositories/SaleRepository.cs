@@ -16,8 +16,8 @@ namespace MetaNet.Microservices.Infrastructure.Repositories
         {
             return await _dbSet
                 .AsNoTrackingWithIdentityResolution()
-                .Include(x => x.SaleItems)
-                    .ThenInclude(x => x.Product)
+                .Include(x => x.SaleItems).ThenInclude(x => x.Product)
+                .Include(x => x.User)
                 .ToListAsync();
         }
     }

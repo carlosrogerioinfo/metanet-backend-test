@@ -22,7 +22,7 @@ namespace MetaNet.Microservices.Domain.Enums
 
     public enum PaymentFormat
     {
-        [Description("Não definido")]
+        [Description("")]
         Undefined = 0,
         [Description("Dinheiro")]
         Cash = 1,

@@ -89,5 +89,19 @@ namespace MetaNet.AllInOne.Api.Controllers
             return await Response(data, _service.Notifications);
         }
 
+        /// <summary>
+        /// Deleta vendas abertas
+        /// </summary>
+        /// <response code="200">Registro que foi deletado com sucesso.</response>
+        /// <response code="412">Ocorreu uma falha de pre-condição ou um algum erro interno.</response>
+        [HttpDelete, Route("delete-open")]
+        [ProducesResponseType(typeof(BaseResponse<SaleResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseError), StatusCodes.Status412PreconditionFailed)]
+        public async Task<IActionResult> DeleteOpen()
+        {
+            var data = await _service.DeleteOpen();
+            return await Response(data, _service.Notifications);
+        }
+
     }
 }

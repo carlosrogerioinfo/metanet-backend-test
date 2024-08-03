@@ -42,7 +42,7 @@ namespace MetaNet.Microservices.Service
 
         public async Task<ICommandResult> Handle(Guid id)
         {
-            var entity = await _repository.GetDataAsync(x => x.Id == id);
+            var entity = await _repository.GetDataAsync(x => x.Id == id, include => include.User);
 
             if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
 
@@ -105,6 +105,21 @@ namespace MetaNet.Microservices.Service
             await _uow.CommitAsync();
 
             return _mapper.Map<SaleResponse>(entity);
+        }
+
+        public async Task<IEnumerable<ICommandResult>> DeleteOpen()
+        {
+            var entity = await _repository.GetListDataAsync(x => x.SaleStatus == SaleStatus.Open);
+
+            if (entity.Count() <= 0) AddNotification("Warning", "Não foram encontrados vendas em aberto");
+
+            if (!IsValid()) return default;
+
+            foreach (var item in entity) _repository.Delete(item);
+
+            await _uow.CommitAsync();
+
+            return _mapper.Map< IEnumerable<SaleResponse>>(entity);
         }
 
     }

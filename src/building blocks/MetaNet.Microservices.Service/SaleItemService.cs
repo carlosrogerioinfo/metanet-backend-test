@@ -38,7 +38,7 @@ namespace MetaNet.Microservices.Service
 
         public async Task<IEnumerable<ICommandResult>> Handle(Guid saleId)
         {
-            var entity = await _repository.GetListDataAsync(x => x.SaleId == saleId, inc => inc.Product);
+            var entity = await _repository.GetListDataAsync(x => x.SaleId == saleId, include => include.Product);
 
             if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
 
