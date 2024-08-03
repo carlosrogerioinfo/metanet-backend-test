@@ -5,6 +5,7 @@ using MetaNet.Microservices.Domain.Entities;
 using MetaNet.Microservices.Domain.Http.Request;
 using MetaNet.Microservices.Domain.Http.Response;
 using MetaNet.Microservices.Domain.Repositories;
+using MetaNet.Microservices.Infrastructure.Caching;
 using MetaNet.Microservices.Infrastructure.Transactions;
 
 namespace MetaNet.Microservices.Service
@@ -15,13 +16,17 @@ namespace MetaNet.Microservices.Service
     {
         private readonly IProductRepository _repository;
         private readonly ISaleItemRepository _repositorySaleItem;
+        private readonly ICacheRepository _cache;
         private readonly IMapper _mapper;
         private readonly IUow _uow;
 
-        public ProductService(IProductRepository repository, ISaleItemRepository repositorySaleItem, IMapper mapper, IUow uow)
+        private const string CACHE_COLLECTION_KEY = "_AllProducts";
+
+        public ProductService(IProductRepository repository, ISaleItemRepository repositorySaleItem, IMapper mapper, IUow uow, ICacheRepository cachingService)
         {
             _repository = repository;
             _repositorySaleItem = repositorySaleItem;
+            _cache = cachingService;
             _mapper = mapper;
             _uow = uow;
 
@@ -29,7 +34,14 @@ namespace MetaNet.Microservices.Service
 
         public async Task<IEnumerable<ICommandResult>> Handle()
         {
-            var entity = await _repository.GetAllAsync();
+
+            var entity = await _cache.GetCollection<Product>(CACHE_COLLECTION_KEY);
+
+            if (entity is null || !entity.Any())
+            {
+                entity = await _repository.GetAllAsync();
+                await _cache.SetCollection(CACHE_COLLECTION_KEY, entity);
+            }
 
             if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
 

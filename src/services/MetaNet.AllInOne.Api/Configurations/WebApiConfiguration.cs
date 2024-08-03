@@ -5,8 +5,17 @@ namespace MetaNet.AllInOne.Api.Configurations
     public static class WebApiConfiguration
     {
 
-        public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services)
+        public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration = null)
         {
+            var redisConfiguration = configuration["Redis:Endpoint"];
+            var redisPassword = configuration["Redis:Password"];
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConfiguration;
+                options.InstanceName = "RedisInstance";
+            });
+
             services.AddControllers()
                 .AddJsonOptions(options => {
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
