@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using System.Text.Json.Serialization;
 
 namespace MetaNet.AllInOne.Api.Configurations
 {
@@ -15,6 +17,8 @@ namespace MetaNet.AllInOne.Api.Configurations
                 options.Configuration = redisConfiguration;
                 options.InstanceName = "RedisInstance";
             });
+
+            //services.Add(ServiceDescriptor.Singleton<IDistributedCache, RedisCache>());
 
             services.AddControllers()
                 .AddJsonOptions(options => {
