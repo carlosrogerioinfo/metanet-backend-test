@@ -3,6 +3,12 @@ using MetaNet.Microservices.Core.Jwt.Settings;
 using MetaNet.Microservices.Infrastructure.Contexts;
 using MetaNet.AllInOne.Api.Configurations;
 using Microsoft.EntityFrameworkCore;
+using MetaNet.Microservices.Domain.Repositories.Base;
+using MetaNet.Microservices.Infrastructure.Repositories.Base;
+using MetaNet.Microservices.Service;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Npgsql;
 
 namespace MetaNet.AllInOne.Api
 {
@@ -18,6 +24,8 @@ namespace MetaNet.AllInOne.Api
         public void ConfigureServices(IServiceCollection services)
         {
             AddDataContextConfigurations(services);
+
+            AddDapperConfigurations(services);
 
             services.AddAutoMapperConfiguration();
 
@@ -54,7 +62,11 @@ namespace MetaNet.AllInOne.Api
                 opt.EnableSensitiveDataLogging();
 
             }, ServiceLifetime.Scoped);
+        }
 
+        private void AddDapperConfigurations(IServiceCollection services)
+        {
+            services.AddScoped<IDbConnection>((serviceProvider) => new NpgsqlConnection(Configuration.GetConnectionString("DatabaseConnection")));
         }
     }
 }

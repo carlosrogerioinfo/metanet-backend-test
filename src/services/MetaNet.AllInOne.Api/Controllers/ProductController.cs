@@ -34,6 +34,21 @@ namespace MetaNet.AllInOne.Api.Controllers
         }
 
         /// <summary>
+        /// Retorna a lista dos registros da tabela de produtos
+        /// </summary>
+        /// <response code="200">Registros que foram retornado com sucesso.</response>
+        /// <response code="412">Ocorreu uma falha de pre-condição ou um algum erro interno.</response>
+        [HttpGet, Route("get-all-dapper")]
+        [ProducesResponseType(typeof(BaseResponse<IEnumerable<ProductResponse>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseError), StatusCodes.Status412PreconditionFailed)]
+        public async Task<IActionResult> GetAllFromDapper()
+        {
+            var data = await _service.HandleDapper();
+            return await Response(data, _service.Notifications);
+
+        }
+
+        /// <summary>
         /// Retorna o registro da tabela produto filtrado pelo id
         /// </summary>
         /// <response code="200">Registro que foi retornado com sucesso.</response>

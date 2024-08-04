@@ -15,6 +15,7 @@ namespace MetaNet.Microservices.Service
                 ICommandHandler<ProductUpdateRequest>
     {
         private readonly IProductRepository _repository;
+        private readonly IProductDapperRepository _repositoryDapper;
         private readonly ISaleItemRepository _repositorySaleItem;
         private readonly ICacheRepository _cache;
         private readonly IMapper _mapper;
@@ -22,14 +23,15 @@ namespace MetaNet.Microservices.Service
 
         private const string CACHE_PRODUCT_COLLECTION_KEY = "AllProducts";
 
-        public ProductService(IProductRepository repository, ISaleItemRepository repositorySaleItem, IMapper mapper, IUow uow, ICacheRepository cachingService)
+        public ProductService(IProductRepository repository, ISaleItemRepository repositorySaleItem, IMapper mapper, IUow uow, ICacheRepository cachingService, IProductDapperRepository repositoryDapper)
         {
             _repository = repository;
+            _repositoryDapper = repositoryDapper;
             _repositorySaleItem = repositorySaleItem;
             _cache = cachingService;
             _mapper = mapper;
             _uow = uow;
-
+            
         }
 
         public async Task<IEnumerable<ICommandResult>> Handle()
@@ -50,6 +52,28 @@ namespace MetaNet.Microservices.Service
 
             return _mapper.Map<IEnumerable<ProductResponse>>(entity.OrderBy(x => x.Description));
         }
+
+        #region 'Dapper Implementation'
+
+        public async Task<IEnumerable<ICommandResult>> HandleDapper()
+        {
+            var entity = await _cache.GetCollection<Product>(CACHE_PRODUCT_COLLECTION_KEY);
+
+            if (entity is null || !entity.Any())
+            {
+                entity = await _repositoryDapper.GetAllAsync();
+
+                if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
+
+                if (!IsValid()) return default;
+
+                await _cache.SetCollection(CACHE_PRODUCT_COLLECTION_KEY, entity);
+            }
+
+            return _mapper.Map<IEnumerable<ProductResponse>>(entity.OrderBy(x => x.Description));
+        }
+
+        #endregion
 
         public async Task<ICommandResult> Handle(Guid id)
         {

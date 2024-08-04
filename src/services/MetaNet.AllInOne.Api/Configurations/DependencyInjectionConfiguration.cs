@@ -30,6 +30,8 @@ namespace MetaNet.AllInOne.Api.Configurations
             
             services.AddScoped<StatisticService>();
 
+            services.AddTransient<IProductDapperRepository, ProductDapperRepository>();
+
             return services;
         }
     }
