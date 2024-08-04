@@ -12,8 +12,8 @@ namespace MetaNet.Microservices.Infrastructure.Caching
         {
             _cache = cache;
             _options = new DistributedCacheEntryOptions{
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2),
-                SlidingExpiration = TimeSpan.FromDays(1)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(120),
+                SlidingExpiration = TimeSpan.FromMinutes(60)
             };
         }
 

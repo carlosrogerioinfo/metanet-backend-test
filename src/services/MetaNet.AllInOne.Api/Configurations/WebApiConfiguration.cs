@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json.Serialization;
 
 namespace MetaNet.AllInOne.Api.Configurations
 {
@@ -51,7 +52,6 @@ namespace MetaNet.AllInOne.Api.Configurations
                 options.InstanceName = "RedisInstance";
 
             });
-
         }
 
 
