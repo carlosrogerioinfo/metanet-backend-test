@@ -5,10 +5,13 @@ namespace MetaNet.AllInOne.Api.Configurations
     public static class WebApiConfiguration
     {
 
-        public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services)
+        public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration = null)
         {
+            RedisConfigureConnection(services, configuration);
+
             services.AddControllers()
-                .AddJsonOptions(options => {
+                .AddJsonOptions(options =>
+                {
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
@@ -38,5 +41,21 @@ namespace MetaNet.AllInOne.Api.Configurations
             return app;
         }
 
+        private static void RedisConfigureConnection(IServiceCollection services, IConfiguration configuration)
+        {
+            var redisConfigurationMultiplexer = configuration["Redis:EndpointMultiplexer"];
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConfigurationMultiplexer;
+                options.InstanceName = "RedisInstance";
+
+            });
+
+        }
+
+
     }
+
+
 }

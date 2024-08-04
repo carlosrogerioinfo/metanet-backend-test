@@ -43,4 +43,13 @@
 	  </Reference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="redis_ca.pem">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="redis_ca.pfx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
