@@ -20,7 +20,7 @@ namespace MetaNet.Microservices.Service
         private readonly IMapper _mapper;
         private readonly IUow _uow;
 
-        private const string CACHE_PRODUCT_COLLECTION_KEY = "_AllProducts";
+        private const string CACHE_PRODUCT_COLLECTION_KEY = "AllProducts";
 
         public ProductService(IProductRepository repository, ISaleItemRepository repositorySaleItem, IMapper mapper, IUow uow, ICacheRepository cachingService)
         {
