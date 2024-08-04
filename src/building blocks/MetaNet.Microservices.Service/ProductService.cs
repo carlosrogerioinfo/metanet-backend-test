@@ -57,7 +57,6 @@ namespace MetaNet.Microservices.Service
 
         public async Task<IEnumerable<ICommandResult>> HandleDapper()
         {
-
             var entity = await _cache.GetCollection<Product>(CACHE_PRODUCT_COLLECTION_KEY);
 
             if (entity is null || !entity.Any())

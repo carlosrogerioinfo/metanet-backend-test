@@ -66,7 +66,7 @@ namespace MetaNet.AllInOne.Api
 
         private void AddDapperConfigurations(IServiceCollection services)
         {
-            services.AddTransient<IDbConnection>((serviceProvider) => new NpgsqlConnection(Configuration.GetConnectionString("DatabaseConnection")));
+            services.AddScoped<IDbConnection>((serviceProvider) => new NpgsqlConnection(Configuration.GetConnectionString("DatabaseConnection")));
         }
     }
 }
