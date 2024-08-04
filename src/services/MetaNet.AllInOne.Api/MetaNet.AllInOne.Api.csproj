@@ -28,6 +28,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="redis_ca.pem" />
+	  <None Remove="redis_ca.pfx" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
 	</ItemGroup>
 
@@ -41,15 +46,6 @@
 	  <Reference Include="Esterdigi.Api.Core">
 	    <HintPath>..\..\building blocks dlls\Esterdigi.Api.Core.dll</HintPath>
 	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="redis_ca.pem">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="redis_ca.pfx">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 </Project>

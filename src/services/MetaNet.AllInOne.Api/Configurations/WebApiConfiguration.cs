@@ -1,15 +1,12 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace MetaNet.AllInOne.Api.Configurations
 {
     public static class WebApiConfiguration
     {
 
-        public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration = null)
+        public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services)
         {
-            RedisConfigureConnection(services, configuration);
-
             services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -41,20 +38,6 @@ namespace MetaNet.AllInOne.Api.Configurations
 
             return app;
         }
-
-        private static void RedisConfigureConnection(IServiceCollection services, IConfiguration configuration)
-        {
-            var redisConfigurationMultiplexer = configuration["Redis:EndpointMultiplexer"];
-            var redisInstanceName = configuration["Redis:RedisInstanceName"];
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConfigurationMultiplexer;
-                options.InstanceName = redisInstanceName;
-
-            });
-        }
-
 
     }
 

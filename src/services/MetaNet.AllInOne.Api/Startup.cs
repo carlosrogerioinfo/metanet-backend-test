@@ -21,7 +21,9 @@ namespace MetaNet.AllInOne.Api
 
             services.AddAutoMapperConfiguration();
 
-            services.AddWebApiConfiguration(Configuration);
+            services.AddWebApiConfiguration();
+
+            services.AddRedisConfiguration(Configuration);
 
             services.AddSwaggerConfiguration();
 
