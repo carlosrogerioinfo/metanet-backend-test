@@ -28,6 +28,17 @@ namespace MetaNet.Microservices.Infrastructure.Caching
             return JsonSerializer.Deserialize<T>(result);
         }
 
+        public async Task<T> GetValue<T>(string param)
+        {
+            var key = param.ToString().ToLower();
+
+            var result = await _cache.GetStringAsync(key);
+
+            if (result is null) return default;
+
+            return JsonSerializer.Deserialize<T>(result);
+        }
+
         public async Task<IEnumerable<T>> GetCollection<T>(string collectionKey)
         {
             var result = await _cache.GetStringAsync(collectionKey);
@@ -40,6 +51,15 @@ namespace MetaNet.Microservices.Infrastructure.Caching
         public async Task SetValue<T>(Guid id, T entity)
         {
             var key = id.ToString().ToLower();
+
+            var newValue = JsonSerializer.Serialize(entity);
+
+            await _cache.SetStringAsync(key, newValue);
+        }
+
+        public async Task SetValue<T>(string param, T entity)
+        {
+            var key = param.ToString().ToLower();
 
             var newValue = JsonSerializer.Serialize(entity);
 
