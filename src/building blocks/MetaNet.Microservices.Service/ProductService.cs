@@ -59,7 +59,7 @@ namespace MetaNet.Microservices.Service
             {
                 entity = await _repository.GetDataAsync(x => x.Id == id);
 
-                if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
+                if (entity is null) AddNotification("Warning", "Produto não encontrado");
 
                 if (!IsValid()) return default;
 
@@ -77,7 +77,7 @@ namespace MetaNet.Microservices.Service
             {
                 entity = await _repository.GetDataAsync(x => x.BarCode == barcode);
 
-                if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
+                if (entity is null) AddNotification("Warning", "Produto não encontrado");
 
                 if (!IsValid()) return default;
 
