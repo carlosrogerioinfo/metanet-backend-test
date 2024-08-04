@@ -1,14 +1,10 @@
-﻿using MetaNet.Microservices.Core.Jwt.Configuration;
+﻿using MetaNet.AllInOne.Api.Configurations;
+using MetaNet.Microservices.Core.Jwt.Configuration;
 using MetaNet.Microservices.Core.Jwt.Settings;
 using MetaNet.Microservices.Infrastructure.Contexts;
-using MetaNet.AllInOne.Api.Configurations;
 using Microsoft.EntityFrameworkCore;
-using MetaNet.Microservices.Domain.Repositories.Base;
-using MetaNet.Microservices.Infrastructure.Repositories.Base;
-using MetaNet.Microservices.Service;
-using Microsoft.Data.SqlClient;
-using System.Data;
 using Npgsql;
+using System.Data;
 
 namespace MetaNet.AllInOne.Api
 {
