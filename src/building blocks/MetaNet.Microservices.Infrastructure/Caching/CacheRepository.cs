@@ -50,7 +50,8 @@ namespace MetaNet.Microservices.Infrastructure.Caching
 
         public async Task SetValue<T>(Guid id, T entity)
         {
-            var key = id.ToString().ToLower();
+            
+            var key = $"{typeof(T).Name}_{id.ToString().ToLower()}";
 
             var newValue = JsonSerializer.Serialize(entity);
 
@@ -59,7 +60,7 @@ namespace MetaNet.Microservices.Infrastructure.Caching
 
         public async Task SetValue<T>(string param, T entity)
         {
-            var key = param.ToString().ToLower();
+            var key = $"{typeof(T).Name}_{param.ToString().ToLower()}";
 
             var newValue = JsonSerializer.Serialize(entity);
 

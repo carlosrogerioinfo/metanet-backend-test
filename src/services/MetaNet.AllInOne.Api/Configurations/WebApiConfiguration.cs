@@ -45,11 +45,12 @@ namespace MetaNet.AllInOne.Api.Configurations
         private static void RedisConfigureConnection(IServiceCollection services, IConfiguration configuration)
         {
             var redisConfigurationMultiplexer = configuration["Redis:EndpointMultiplexer"];
+            var redisInstanceName = configuration["Redis:RedisInstanceName"];
 
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConfigurationMultiplexer;
-                options.InstanceName = "RedisInstance";
+                options.InstanceName = redisInstanceName;
 
             });
         }
