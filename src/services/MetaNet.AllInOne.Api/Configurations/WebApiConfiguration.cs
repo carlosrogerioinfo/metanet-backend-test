@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace MetaNet.AllInOne.Api.Configurations
 {
@@ -9,19 +7,11 @@ namespace MetaNet.AllInOne.Api.Configurations
 
         public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration = null)
         {
-            var redisConfiguration = configuration["Redis:Endpoint"];
-            var redisPassword = configuration["Redis:Password"];
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConfiguration;
-                options.InstanceName = "RedisInstance";
-            });
-
-            //services.Add(ServiceDescriptor.Singleton<IDistributedCache, RedisCache>());
+            RedisConfigureConnection(services, configuration);
 
             services.AddControllers()
-                .AddJsonOptions(options => {
+                .AddJsonOptions(options =>
+                {
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
@@ -51,5 +41,21 @@ namespace MetaNet.AllInOne.Api.Configurations
             return app;
         }
 
+        private static void RedisConfigureConnection(IServiceCollection services, IConfiguration configuration)
+        {
+            var redisConfigurationMultiplexer = configuration["Redis:EndpointMultiplexer"];
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConfigurationMultiplexer;
+                options.InstanceName = "RedisInstance";
+
+            });
+
+        }
+
+
     }
+
+
 }
