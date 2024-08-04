@@ -20,7 +20,8 @@ namespace MetaNet.Microservices.Service
         private readonly IMapper _mapper;
         private readonly IUow _uow;
 
-        private const string CACHE_COLLECTION_KEY = "_AllProducts";
+        private const string CACHE_PRODUCT_COLLECTION_KEY = "_AllProducts";
+        private const string CACHE_PRODUCT_SINGLE_KEY = "_Product{1}";
 
         public ProductService(IProductRepository repository, ISaleItemRepository repositorySaleItem, IMapper mapper, IUow uow, ICacheRepository cachingService)
         {
@@ -35,12 +36,13 @@ namespace MetaNet.Microservices.Service
         public async Task<IEnumerable<ICommandResult>> Handle()
         {
 
-            var entity = await _cache.GetCollection<Product>(CACHE_COLLECTION_KEY);
+            var entity = await _cache.GetCollection<Product>(CACHE_PRODUCT_COLLECTION_KEY);
 
             if (entity is null || !entity.Any())
             {
                 entity = await _repository.GetAllAsync();
-                await _cache.SetCollection(CACHE_COLLECTION_KEY, entity);
+
+                await _cache.SetCollection(CACHE_PRODUCT_COLLECTION_KEY, entity);
             }
 
             if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
@@ -52,7 +54,14 @@ namespace MetaNet.Microservices.Service
 
         public async Task<ICommandResult> Handle(Guid id)
         {
-            var entity = await _repository.GetDataAsync(x => x.Id == id);
+            var entity = await _cache.GetValue<Product>(id);
+
+            if (entity is null)
+            {
+                entity = await _repository.GetDataAsync(x => x.Id == id);
+
+                await _cache.SetValue(id, entity);
+            }
 
             if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
 
