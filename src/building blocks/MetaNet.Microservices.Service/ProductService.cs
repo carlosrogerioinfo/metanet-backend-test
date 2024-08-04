@@ -100,6 +100,9 @@ namespace MetaNet.Microservices.Service
             await _repository.AddAsync(entity);
             await _uow.CommitAsync();
 
+            await _cache.SetValue(entity.Id, entity);
+            await _cache.SetValue(entity.BarCode, entity);
+
             return _mapper.Map<ProductResponse>(entity);
         }
 
@@ -115,6 +118,9 @@ namespace MetaNet.Microservices.Service
 
             await _repository.UpdateAsync(entity);
             await _uow.CommitAsync();
+
+            await _cache.SetValue(entity.Id, entity);
+            await _cache.SetValue(entity.BarCode, entity);
 
             return _mapper.Map<ProductResponse>(entity);
         }
