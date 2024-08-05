@@ -48,6 +48,8 @@ namespace MetaNet.Microservices.Service
                 if (!IsValid()) return default;
 
                 await _cache.SetCollection(CACHE_PRODUCT_COLLECTION_KEY, entity);
+
+                return _mapper.Map<IEnumerable<ProductResponse>>(entity.OrderBy(x => x.Description));
             }
 
             return _mapper.Map<IEnumerable<ProductResponse>>(entity.OrderBy(x => x.Description));
@@ -68,6 +70,8 @@ namespace MetaNet.Microservices.Service
                 if (!IsValid()) return default;
 
                 await _cache.SetCollection(CACHE_PRODUCT_COLLECTION_KEY, entity);
+
+                return _mapper.Map<IEnumerable<ProductResponse>>(entity.OrderBy(x => x.Description));
             }
 
             return _mapper.Map<IEnumerable<ProductResponse>>(entity.OrderBy(x => x.Description));
@@ -88,6 +92,8 @@ namespace MetaNet.Microservices.Service
                 if (!IsValid()) return default;
 
                 await _cache.SetValue(id, entity);
+
+                return _mapper.Map<ProductResponse>(entity);
             }
 
             return _mapper.Map<ProductResponse>(entity);
@@ -106,6 +112,8 @@ namespace MetaNet.Microservices.Service
                 if (!IsValid()) return default;
 
                 await _cache.SetValue(barcode, entity);
+
+                return _mapper.Map<ProductResponse>(entity);
             }
 
             return _mapper.Map<ProductResponse>(entity);
