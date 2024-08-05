@@ -3,7 +3,6 @@ using MetaNet.Products.Api.Configurations;
 using MetaNet.Microservices.Core.Jwt.Configuration;
 using MetaNet.Microservices.Core.Jwt.Settings;
 using MetaNet.Microservices.Infrastructure.Contexts;
-using MetaNet.Products.Api.Configurations;
 
 namespace MetaNet.Products.Api
 {

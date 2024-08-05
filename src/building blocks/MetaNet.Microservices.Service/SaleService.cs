@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Esterdigi.Api.Core.Commands;
 using FluentValidator;
+using MetaNet.Microservices.Core.Constant;
 using MetaNet.Microservices.Domain.Entities;
 using MetaNet.Microservices.Domain.Enums;
 using MetaNet.Microservices.Domain.Http.Request;
@@ -33,18 +34,18 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetAllSalesAsync();
 
-            if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
+            if (entity.Count() <= 0) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
-            return _mapper.Map<IEnumerable<SaleResponse>>(entity);
+            return _mapper.Map<IEnumerable<SaleResponse>>(entity.OrderByDescending(x => x.SaleDate));
         }
 
         public async Task<ICommandResult> Handle(Guid id)
         {
             var entity = await _repository.GetDataAsync(x => x.Id == id, include => include.User);
 
-            if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -55,7 +56,7 @@ namespace MetaNet.Microservices.Service
         {
             var user = await _repositoryUser.GetDataAsync(x => x.Id == request.UserId);
 
-            if (user is null) AddNotification("Warning", "Usuário não encontrado");
+            if (user is null) AddNotification(Constants.AlertTitle, Constants.UserNotFound);
 
             var entity = new Sale(default, DateTime.Now, 0, PaymentFormat.Undefined, SaleStatus.Open, request.UserId);
 
@@ -74,9 +75,9 @@ namespace MetaNet.Microservices.Service
             var entity = await _repository.GetDataAsync(x => x.Id == request.Id);
             var saleItem = await _repositorySaleItem.GetListDataAsync(x => x.SaleId == request.Id);
 
-            if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
-            if (saleItem.Count() <= 0) AddNotification("Warning", "Itens da venda não encontrado");
+            if (saleItem.Count() <= 0) AddNotification(Constants.AlertTitle, Constants.SaleItensNotFound);
 
             entity.CloseSale(saleItem.Sum(x => x.Total));
             entity.SetPaymentSale(request.PaymentFormat);
@@ -95,7 +96,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetDataAsync(x => x.Id == id);
 
-            if (entity is null) AddNotification("Warning", "Registro não encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -111,7 +112,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetListDataAsync(x => x.SaleStatus == SaleStatus.Open);
 
-            if (entity.Count() <= 0) AddNotification("Warning", "Não foram encontrados vendas em aberto");
+            if (entity.Count() <= 0) AddNotification(Constants.AlertTitle, Constants.OpenedSalesNotFound);
 
             if (!IsValid()) return default;
 

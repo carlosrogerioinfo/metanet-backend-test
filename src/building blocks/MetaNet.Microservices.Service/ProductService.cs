@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Esterdigi.Api.Core.Commands;
 using FluentValidator;
+using MetaNet.Microservices.Core.Constant;
 using MetaNet.Microservices.Domain.Entities;
 using MetaNet.Microservices.Domain.Http.Request;
 using MetaNet.Microservices.Domain.Http.Response;
@@ -43,7 +44,7 @@ namespace MetaNet.Microservices.Service
             {
                 entity = await _repository.GetAllAsync();
 
-                if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
+                if (entity.Count() <= 0) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
                 if (!IsValid()) return default;
 
@@ -65,7 +66,7 @@ namespace MetaNet.Microservices.Service
             {
                 entity = await _repositoryDapper.GetAllAsync();
 
-                if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
+                if (entity.Count() <= 0) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
                 if (!IsValid()) return default;
 
@@ -87,7 +88,7 @@ namespace MetaNet.Microservices.Service
             {
                 entity = await _repository.GetDataAsync(x => x.Id == id);
 
-                if (entity is null) AddNotification("Warning", "Produto não encontrado");
+                if (entity is null) AddNotification(Constants.AlertTitle, Constants.ProductNotFound);
 
                 if (!IsValid()) return default;
 
@@ -107,7 +108,7 @@ namespace MetaNet.Microservices.Service
             {
                 entity = await _repository.GetDataAsync(x => x.BarCode == barcode);
 
-                if (entity is null) AddNotification("Warning", "Produto não encontrado");
+                if (entity is null) AddNotification(Constants.AlertTitle, Constants.ProductNotFound);
 
                 if (!IsValid()) return default;
 
@@ -132,6 +133,9 @@ namespace MetaNet.Microservices.Service
             await _repository.AddAsync(entity);
             await _uow.CommitAsync();
 
+            var products = await _repository.GetAllAsync();
+            await _cache.SetCollection(CACHE_PRODUCT_COLLECTION_KEY, products);
+
             await _cache.SetValue(entity.Id, entity);
             await _cache.SetValue(entity.BarCode, entity);
 
@@ -151,6 +155,9 @@ namespace MetaNet.Microservices.Service
             await _repository.UpdateAsync(entity);
             await _uow.CommitAsync();
 
+            var products = await _repository.GetAllAsync();
+            await _cache.SetCollection(CACHE_PRODUCT_COLLECTION_KEY, products);
+
             await _cache.SetValue(entity.Id, entity);
             await _cache.SetValue(entity.BarCode, entity);
 
@@ -163,13 +170,13 @@ namespace MetaNet.Microservices.Service
 
             if (product is not null)
             {
-                AddNotification("Warning", "Não é possível excluir esse produto, pois o mesmo está sendo usado");
+                AddNotification(Constants.AlertTitle, Constants.RegisterInUse);
                 return default;
             }
 
             var entity = await _repository.GetDataAsync(x => x.Id == id);
 
-            if (entity is null) AddNotification("Warning", "Registro não encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -182,7 +189,7 @@ namespace MetaNet.Microservices.Service
         private async Task<Product> ValidateInsert(ProductRegisterRequest request)
         {
             var entity = await _repository.GetDataAsync(x => x.BarCode == request.BarCode || x.Description.ToLower() == request.Description.ToLower());
-            if (entity is not null) AddNotification("Warning", "Já existe um produto cadastrado com esse código de barras ou descrição");
+            if (entity is not null) AddNotification(Constants.AlertTitle, Constants.BarCodeOrDescriptionExistis);
 
             return entity;
         }
@@ -190,10 +197,10 @@ namespace MetaNet.Microservices.Service
         private async Task<Product> ValidateUpdate(ProductUpdateRequest request)
         {
             var entity = await _repository.GetDataAsync(x => x.Id != request.Id && (x.BarCode == request.BarCode || x.Description.ToLower() == request.Description.ToLower()));
-            if (entity is not null) AddNotification("Warning", "Já existe um produto cadastrado com esse código de barras ou descrição");
+            if (entity is not null) AddNotification(Constants.AlertTitle, Constants.BarCodeOrDescriptionExistis);
 
             entity = await _repository.GetDataAsync(x => x.Id == request.Id);
-            if (entity is null) AddNotification("Warning", "Produto não encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.ProductNotFound);
 
             return entity;
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Esterdigi.Api.Core.Commands;
 using FluentValidator;
+using MetaNet.Microservices.Core.Constant;
 using MetaNet.Microservices.Domain.Entities;
 using MetaNet.Microservices.Domain.Http.Request;
 using MetaNet.Microservices.Domain.Http.Response;
@@ -29,7 +30,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetAllAsync();
 
-            if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
+            if (entity.Count() <= 0) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -40,7 +41,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetListDataAsync(x => x.SaleId == saleId, include => include.Product);
 
-            if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -79,7 +80,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetDataAsync(x => x.Id == id);
 
-            if (entity is null) AddNotification("Warning", "Registro não encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 

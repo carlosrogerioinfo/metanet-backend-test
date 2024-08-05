@@ -2,6 +2,7 @@
 using Esterdigi.Api.Core.Commands;
 using Esterdigi.Api.Core.Helpers.Encrypt;
 using FluentValidator;
+using MetaNet.Microservices.Core.Constant;
 using MetaNet.Microservices.Domain.Entities;
 using MetaNet.Microservices.Domain.Http.Request;
 using MetaNet.Microservices.Domain.Http.Response;
@@ -34,7 +35,7 @@ namespace MetaNet.Microservices.Service
 
             if (entity is null)
             {
-                AddNotification("Warning", "Usuário ou senha inválidos");
+                AddNotification(Constants.AlertTitle, Constants.InvalidUserOrPassword);
                 return default;
             }
 
@@ -47,7 +48,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetAllAsync();
 
-            if (entity.Count() <= 0) AddNotification("Warning", "Nenhum registro encontrado");
+            if (entity.Count() <= 0) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -58,7 +59,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetDataAsync(x => x.Id == id);
 
-            if (entity is null) AddNotification("Warning", "Nenhum registro encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -101,7 +102,7 @@ namespace MetaNet.Microservices.Service
         {
             var entity = await _repository.GetDataAsync(x => x.Id == id);
 
-            if (entity is null) AddNotification("Warning", "Registro não encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.RegisterNotFound);
 
             if (!IsValid()) return default;
 
@@ -115,7 +116,7 @@ namespace MetaNet.Microservices.Service
         private async Task<User> ValidateInsert(UserRegisterRequest request)
         {
             var entity = await _repository.GetDataAsync(x => x.Email.ToLower() == request.Email.ToLower());
-            if (entity is not null) AddNotification("Warning", "Já existe um registro com esse e-mail cadastrado");
+            if (entity is not null) AddNotification(Constants.AlertTitle, Constants.RegisterWithMailInserted);
 
             return entity;
         }
@@ -123,10 +124,10 @@ namespace MetaNet.Microservices.Service
         private async Task<User> ValidateUpdate(UserUpdateRequest request)
         {
             var entity = await _repository.GetDataAsync(x => x.Id != request.Id && x.Email.ToLower() == request.Email.ToLower());
-            if (entity is not null) AddNotification("Warning", "Já existe um registro com esse e-mail cadastrado");
+            if (entity is not null) AddNotification(Constants.AlertTitle, Constants.RegisterWithMailInserted);
 
             entity = await _repository.GetDataAsync(x => x.Id == request.Id);
-            if (entity is null) AddNotification("Warning", "Usuário não encontrado");
+            if (entity is null) AddNotification(Constants.AlertTitle, Constants.UserNotFound);
 
             return entity;
         }
